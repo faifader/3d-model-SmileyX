@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model with Transparent Background</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: transparent; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Set up scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0); // Transparent background
+        document.body.appendChild(renderer.domElement);
+
+        // Load the GLTF model
+        const loader = new THREE.GLTFLoader();
+        loader.load('https://github.com/faifader/3d-model-Smiley/raw/main/%20Smiley%20Pixel%20green.gltf', function(gltf) {
+            const model = gltf.scene;
+            scene.add(model);
+
+            // Optional: Adjust model position, scale, and rotation
+            model.position.set(0, 0, 0);
+            model.scale.set(1, 1, 1);
+
+            // Animate the model
+            function animate() {
+                requestAnimationFrame(animate);
+                model.rotation.y += 0.01; // Rotate the model for effect
+                renderer.render(scene, camera);
+            }
+            animate();
+        }, undefined, function(error) {
+            console.error(error);
+        });
+
+        // Set camera position
+        camera.position.z = 5;
+
+        // Adjust canvas size on window resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
